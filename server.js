@@ -56,8 +56,15 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname + "/public/build/index.html"));
 });
 app.use(express.static(path.join(__dirname, "/public/build")));*/
-
-const PORT = 5000;
-app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+import http from "http";
+http
+  .createServer(function (req, res) {
+    res.writeHead(200, { "Content-Type": "text/plain" });
+    res.end("Hello World\n");
+  })
+  .listen(8080, "localhost");
+console.log("Server running at http://localhost:8080/");
+//const PORT = 8080;
+//app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 //app.listen(5000, () => console.log("Listening on port 5000"));
