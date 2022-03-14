@@ -57,6 +57,9 @@ app.get("/", (req, res) => {
 });
 app.use(express.static(path.join(__dirname, "/public/build")));*/
 app.get("/", (req, res) => {
+  res.send("send to front");
+});
+app.get("/", (req, res) => {
   res.send("hello world");
 });
 const PORT = 8000;
