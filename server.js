@@ -1,8 +1,8 @@
-const express = require("express");
+import express from "express";
 const app = express();
-const cors = require("cors");
-const fetch = require("node-fetch");
-const path = require("path");
+import cors from "cors";
+import fetch from "node-fetch";
+import path from "path";
 app.use(cors());
 
 /*app.get("/", (req, res) => {
@@ -50,12 +50,12 @@ app.post("/", (req, res) => {
         console.log(res);
       }),
   });
-});*/
+});
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname + "/public/build/index.html"));
 });
-app.use(express.static(path.join(__dirname, "/public/build")));
+app.use(express.static(path.join(__dirname, "/public/build")));*/
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
