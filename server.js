@@ -28,29 +28,33 @@ app.use(cors());
 });
 */
 var token;
+
 app.get("/", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
+  console.log(token);
   fetch("https://api.prepaidforge.com/v1/1.0/signInWithApi", {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-PrepaidForge-Api-Token": `${token}`,
+    },
     body: JSON.stringify({
+      // your expected POST request payload goes here
       email: "Worldofprodiverse@gmail.com",
       password: "Bravo1?@1",
+    }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      // enter you logic when the fetch is successful
+      // var stocks = groupBy("skus", data);
+      console.log(data);
+      res.send(data);
     })
-      .then(function (res) {
-        console.log("post");
-        token = res;
-        console.log(res);
-      })
-      .catch(function (res) {
-        console.log(res);
-      }),
-  });
+    .catch((error) => {
+      // enter your logic for when there is an error (ex. error toast)
+      console.log(error);
+    });
 });
-
 /*app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname + "/public/build/index.html"));
 });
