@@ -28,21 +28,18 @@ app.use(cors());
 });
 */
 var token;
-app.post("/", (req, res) => {
+app.get("/", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
-  console.log("hello2");
   fetch("https://api.prepaidforge.com/v1/1.0/signInWithApi", {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
     method: "POST",
-    body: {
-      data: {
-        email: "Worldofprodiverse@gmail.com",
-        password: "Bravo1?@1",
-      },
-    }
+    body: JSON.stringify({
+      email: "Worldofprodiverse@gmail.com",
+      password: "Bravo1?@1",
+    })
       .then(function (res) {
         console.log("post");
         token = res;
