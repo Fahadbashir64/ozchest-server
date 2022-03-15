@@ -58,16 +58,16 @@ app.get("/", (req, res) => {
 app.use(express.static(path.join(__dirname, "/public/build")));*/
 
 app.get("/", (req, res) => {
-  fetch("https://api.prepaidforge.com/v1/1.0/signInWithApi", {
-    method: "POST",
+  fetch("https://api.prepaidforge.com/v1/1.0/findAllProducts", {
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
+    /*body: JSON.stringify({
       // your expected POST request payload goes here
       email: "Worldofprodiverse@gmail.com",
       password: "Bravo1?@1",
-    }),
+    }),*/
   })
     .then((res) => res.json())
     .then((data) => {
