@@ -57,6 +57,27 @@ app.get("/", (req, res) => {
 });
 app.use(express.static(path.join(__dirname, "/public/build")));*/
 
+function groupBy(key, array) {
+  var result = [];
+  for (var i = 0; i < array.length; i++) {
+    var added = false;
+    for (var j = 0; j < result.length; j++) {
+      if (result[j][key] == array[i][key]) {
+        result[j].items.push(array[i]);
+        added = true;
+        break;
+      }
+    }
+    if (!added) {
+      var entry = { items: [] };
+      entry[key] = array[i][key];
+      entry.items.push(array[i]);
+      result.push(entry);
+    }
+  }
+  return result;
+}
+
 app.get("/", (req, res) => {
   fetch("https://api.prepaidforge.com/v1/1.0/findAllProducts", {
     method: "GET",
@@ -72,8 +93,9 @@ app.get("/", (req, res) => {
     .then((res) => res.json())
     .then((data) => {
       // enter you logic when the fetch is successful
-      console.log(data);
-      res.send(data);
+      var stocks = groupBy("skus", data);
+      console.log(stocks);
+      res.send(stocks);
     })
     .catch((error) => {
       // enter your logic for when there is an error (ex. error toast)
