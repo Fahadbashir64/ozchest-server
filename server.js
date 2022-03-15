@@ -29,7 +29,7 @@ app.use(cors());
 */
 var token;
 
-app.get("/", (req, res) => {
+app.get("/signin", (req, res) => {
   console.log(token);
   fetch("https://api.prepaidforge.com/v1/1.0/signInWithApi", {
     method: "POST",
