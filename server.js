@@ -81,6 +81,7 @@ function groupBy(key, array) {
 }
 
 app.get("/", (req, res) => {
+  console.log(token);
   fetch("https://api.prepaidforge.com/v1/1.0/findStocks", {
     method: "POST",
     headers: {
