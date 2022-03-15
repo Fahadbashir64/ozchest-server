@@ -56,11 +56,29 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname + "/public/build/index.html"));
 });
 app.use(express.static(path.join(__dirname, "/public/build")));*/
+
 app.get("/", (req, res) => {
-  res.send("send to front");
-});
-app.get("/", (req, res) => {
-  res.send("hello world");
+  fetch("https://api.prepaidforge.com/v1/1.0/signInWithApi", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      // your expected POST request payload goes here
+      email: "Worldofprodiverse@gmail.com",
+      password: "Bravo1?@1",
+    }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      // enter you logic when the fetch is successful
+      console.log(data);
+      res.send(data);
+    })
+    .catch((error) => {
+      // enter your logic for when there is an error (ex. error toast)
+      console.log(error);
+    });
 });
 const PORT = 8000;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
