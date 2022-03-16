@@ -5,7 +5,7 @@ import fetch from "node-fetch";
 import path from "path";
 app.use(cors());
 
-app.get("/signin", (req, res) => {
+/*app.get("/signin", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   console.log("hello1");
   fetch("https://api.prepaidforge.com/v1/1.0/findAllProducts", {
@@ -25,7 +25,7 @@ app.get("/signin", (req, res) => {
       res.send(data);
     })
     .catch((err) => console.log(err));
-});
+});*/
 
 var token;
 
@@ -106,7 +106,8 @@ app.get("/", (req, res) => {
           "X-PrepaidForge-Api-Token": `${data}`,
         },
         body: JSON.stringify({
-          skus: ["Tom-Clancy's-The-Division-2-Gold-Edition-EU-Xbox-One"],
+          types: ["TEXT", "SCAN"],
+          skus: ["iTunes-300-RUB-RU"],
         }),
         /*body: JSON.stringify({
       // your expected POST request payload goes here
