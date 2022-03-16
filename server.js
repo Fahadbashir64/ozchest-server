@@ -99,8 +99,8 @@ app.get("/", (req, res) => {
     .then((data) => {
       // enter you logic when the fetch is successful
       // var stocks = groupBy("skus", data);
-      console.log(data);
-      res.send(data);
+      console.log(data.apiToken);
+      res.send(data.apiToken);
       /*fetch("https://api.prepaidforge.com/v1/1.0/findStocks", {
         method: "POST",
         header: {
