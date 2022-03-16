@@ -32,31 +32,33 @@ app.use(cors());
 
 var token;
 
-/*app.get("/signin", (req, res) => {
-  fetch("https://api.prepaidforge.com/v1/1.0/signInWithApi", {
+app.get("/signin", (req, res) => {
+  fetch("https://api.prepaidforge.com/v1/1.0/findStocks", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "X-PrepaidForge-Api-Token": token,
     },
+
     body: JSON.stringify({
-      // your expected POST request payload goes here
-      email: "Worldofprodiverse@gmail.com",
-      password: "Bravo1?@1",
+      types: ["TEXT", "SCAN"],
+      skus: ["iTunes-300-RUB-RU"],
     }),
   })
-    .then((res) => res.json())
-    .then((data) => {
+    .then((response) => response.json())
+    .then((data1) => {
       // enter you logic when the fetch is successful
       // var stocks = groupBy("skus", data);
-      console.log(data);
-      res.send(data);
+      console.log("hello22");
+      console.log(data1);
+      response.send(data1);
     })
     .catch((error) => {
       // enter your logic for when there is an error (ex. error toast)
       console.log(error);
     });
 });
-app.get("/", (req, res) => {
+/*app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname + "/public/build/index.html"));
 });
 app.use(express.static(path.join(__dirname, "/public/build")));*/
@@ -100,37 +102,15 @@ app.get("/", (req, res) => {
       // enter you logic when the fetch is successful
       // var stocks = groupBy("skus", data);
       console.log("hello");
-      console.log(data.apiToken);
-      fetch("https://api.prepaidforge.com/v1/1.0/findStocks", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-PrepaidForge-Api-Token": `${data.apiToken}`,
-        },
-
-        body: JSON.stringify({
-          types: ["TEXT", "SCAN"],
-          skus: ["iTunes-300-RUB-RU"],
-        }),
-      })
-        .then((response) => response.json())
-        .then((data1) => {
-          // enter you logic when the fetch is successful
-          // var stocks = groupBy("skus", data);
-          console.log("hello22");
-          console.log(data1);
-          response.send(data1);
-        })
-        .catch((error) => {
-          // enter your logic for when there is an error (ex. error toast)
-          console.log(error);
-        });
+      token = data.apiToken;
+      console.log(token);
     })
     .catch((error) => {
       // enter your logic for when there is an error (ex. error toast)
       console.log(error);
     });
 });
+console.log(token);
 const PORT = 8000;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
