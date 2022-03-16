@@ -30,12 +30,10 @@ app.use(cors());
 var token;
 
 app.get("/signin", (req, res) => {
-  console.log(token);
   fetch("https://api.prepaidforge.com/v1/1.0/signInWithApi", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-PrepaidForge-Api-Token": `${token}`,
     },
     body: JSON.stringify({
       // your expected POST request payload goes here
@@ -87,7 +85,7 @@ app.get("/", (req, res) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-PrepaidForge-Api-Token": `${token}`,
+      "X-PrepaidForge-Api-Token": req.body.apiToken,
     },
     data: { types: ["TEXT", "SCAN"], skus: ["Netflix-25-Eur"] },
     /*body: JSON.stringify({
