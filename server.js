@@ -96,13 +96,16 @@ app.get("/", (req, res) => {
     .then((data) => {
       // enter you logic when the fetch is successful
       // var stocks = groupBy("skus", data);
+      console.log(data);
       fetch("https://api.prepaidforge.com/v1/1.0/findStocks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "X-PrepaidForge-Api-Token": `${data}`,
         },
-        data: { types: ["TEXT", "SCAN"], skus: ["Netflix-25-Eur"] },
+        data: {
+          skus: ["Tom-Clancy's-The-Division-2-Gold-Edition-EU-Xbox-One"],
+        },
         /*body: JSON.stringify({
       // your expected POST request payload goes here
       email: "Worldofprodiverse@gmail.com",
