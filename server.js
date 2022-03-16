@@ -3,7 +3,7 @@ const app = express();
 import cors from "cors";
 import fetch from "node-fetch";
 import path from "path";
-import { send } from "process";
+// import { send } from "process";
 import { response } from "express";
 app.use(cors());
 
