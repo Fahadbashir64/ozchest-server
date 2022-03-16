@@ -5,7 +5,7 @@ import fetch from "node-fetch";
 import path from "path";
 app.use(cors());
 
-/*app.get("/", (req, res) => {
+app.get("/signin", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   console.log("hello1");
   fetch("https://api.prepaidforge.com/v1/1.0/findAllProducts", {
@@ -26,7 +26,7 @@ app.use(cors());
     })
     .catch((err) => console.log(err));
 });
-*/
+
 var token;
 
 /*app.get("/signin", (req, res) => {
