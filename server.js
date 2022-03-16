@@ -105,9 +105,9 @@ app.get("/", (req, res) => {
         header: {
           "X-PrepaidForge-Api-Token": `${data}`,
         },
-        data: {
-          sku: ["Tom-Clancy's-The-Division-2-Gold-Edition-EU-Xbox-One"],
-        },
+        body: JSON.stringify({
+          skus: ["Tom-Clancy's-The-Division-2-Gold-Edition-EU-Xbox-One"],
+        }),
         /*body: JSON.stringify({
       // your expected POST request payload goes here
       email: "Worldofprodiverse@gmail.com",
