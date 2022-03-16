@@ -5,7 +5,7 @@ import fetch from "node-fetch";
 import path from "path";
 app.use(cors());
 
-app.get("/signin", (req, res) => {
+/*app.get("/signin", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   console.log("hello1");
 
@@ -28,7 +28,7 @@ app.get("/signin", (req, res) => {
       res.send(data);
     })
     .catch((err) => console.log(err));
-});
+});*/
 
 var token;
 
@@ -82,7 +82,7 @@ function groupBy(key, array) {
   return result;
 }
 
-/*app.get("/", (req, res) => {
+app.get("/", (req, res) => {
   console.log(token);
   fetch("https://api.prepaidforge.com/v1/1.0/signInWithApi", {
     method: "POST",
@@ -100,7 +100,7 @@ function groupBy(key, array) {
       // enter you logic when the fetch is successful
       // var stocks = groupBy("skus", data);
       console.log(data);
-      fetch("https://api.prepaidforge.com/v1/1.0/findStocks", {
+      fetch("https://api.prepaidforge.com/v1/1.0/getApiOrders", {
         method: "POST",
         header: {
           "Content-Type": "application/json",
@@ -109,14 +109,15 @@ function groupBy(key, array) {
           "X-PrepaidForge-Api-Token": `${data}`,
         },
         body: JSON.stringify({
-          types: ["TEXT", "SCAN"],
-          skus: ["iTunes-300-RUB-RU"],
+          page: 1,
+          startDate: 1571184000000,
+          endDate: 1571616000000,
         }),
         /*body: JSON.stringify({
       // your expected POST request payload goes here
       email: "Worldofprodiverse@gmail.com",
       password: "Bravo1?@1",
-    }),
+    }),*/
       })
         .then((response) => response.json())
         .then((data1) => {
@@ -134,7 +135,7 @@ function groupBy(key, array) {
       // enter your logic for when there is an error (ex. error toast)
       console.log(error);
     });
-});*/
+});
 const PORT = 8000;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
