@@ -99,12 +99,14 @@ app.get("/", (req, res) => {
       console.log(data);
       fetch("https://api.prepaidforge.com/v1/1.0/findStocks", {
         method: "POST",
-        headers: {
+        header: {
           "Content-Type": "application/json",
+        },
+        header: {
           "X-PrepaidForge-Api-Token": `${data}`,
         },
         data: {
-          skus: ["Tom-Clancy's-The-Division-2-Gold-Edition-EU-Xbox-One"],
+          sku: ["Tom-Clancy's-The-Division-2-Gold-Edition-EU-Xbox-One"],
         },
         /*body: JSON.stringify({
       // your expected POST request payload goes here
