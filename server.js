@@ -99,15 +99,15 @@ app.get("/", (req, res) => {
     .then((data) => {
       // enter you logic when the fetch is successful
       // var stocks = groupBy("skus", data);
-
+      console.log("hello");
+      console.log(data.apiToken);
       fetch("https://api.prepaidforge.com/v1/1.0/findStocks", {
         method: "POST",
-        header: {
+        headers: {
           "Content-Type": "application/json",
+          "X-PrepaidForge-Api-Token": `${data.apiToken}`,
         },
-        header: {
-          "X-PrepaidForge-Api-Token": data.apiToken,
-        },
+
         body: JSON.stringify({
           types: ["TEXT", "SCAN"],
           skus: ["iTunes-300-RUB-RU"],
@@ -117,6 +117,7 @@ app.get("/", (req, res) => {
         .then((data1) => {
           // enter you logic when the fetch is successful
           // var stocks = groupBy("skus", data);
+          console.log("hello22");
           console.log(data1);
           response.send(data1);
         })
