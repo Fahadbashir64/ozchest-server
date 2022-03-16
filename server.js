@@ -85,7 +85,7 @@ app.get("/", (req, res) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-PrepaidForge-Api-Token": `776a34a026a4bc4cbafc09c362e8a07135d0cc3bf7083c5ad6a64a3eaba6160c`,
+            "X-PrepaidForge-Api-Token": `${data.apiToken}`,
           },
 
           body: JSON.stringify({
