@@ -100,7 +100,8 @@ app.get("/", (req, res) => {
       // enter you logic when the fetch is successful
       // var stocks = groupBy("skus", data);
       console.log(data);
-      fetch("https://api.prepaidforge.com/v1/1.0/getApiOrders", {
+      res.send(data);
+      /*fetch("https://api.prepaidforge.com/v1/1.0/findStocks", {
         method: "POST",
         header: {
           "Content-Type": "application/json",
@@ -109,15 +110,9 @@ app.get("/", (req, res) => {
           "X-PrepaidForge-Api-Token": `${data}`,
         },
         body: JSON.stringify({
-          page: 1,
-          startDate: 1571184000000,
-          endDate: 1571616000000,
+          types: ["TEXT", "SCAN"],
+          skus: ["iTunes-300-RUB-RU"],
         }),
-        /*body: JSON.stringify({
-      // your expected POST request payload goes here
-      email: "Worldofprodiverse@gmail.com",
-      password: "Bravo1?@1",
-    }),*/
       })
         .then((response) => response.json())
         .then((data1) => {
@@ -129,7 +124,7 @@ app.get("/", (req, res) => {
         .catch((error) => {
           // enter your logic for when there is an error (ex. error toast)
           console.log(error);
-        });
+        });*/
     })
     .catch((error) => {
       // enter your logic for when there is an error (ex. error toast)
