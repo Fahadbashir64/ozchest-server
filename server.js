@@ -100,7 +100,7 @@ app.get("/", (req, res) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-PrepaidForge-Api-Token": data,
+          "X-PrepaidForge-Api-Token": `${data}`,
         },
         data: { types: ["TEXT", "SCAN"], skus: ["Netflix-25-Eur"] },
         /*body: JSON.stringify({
