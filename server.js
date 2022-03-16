@@ -103,6 +103,7 @@ app.get("/", (req, res) => {
       // var stocks = groupBy("skus", data);
       console.log("hello");
       token = data.apiToken;
+      res.send(token);
       console.log(token);
     })
     .catch((error) => {
