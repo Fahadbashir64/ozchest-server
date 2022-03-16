@@ -3,6 +3,8 @@ const app = express();
 import cors from "cors";
 import fetch from "node-fetch";
 import path from "path";
+import { send } from "process";
+import { response } from "express";
 app.use(cors());
 
 /*app.get("/signin", (req, res) => {
@@ -124,6 +126,7 @@ app.get("/", (req, res) => {
         .catch((error) => {
           // enter your logic for when there is an error (ex. error toast)
           console.log(error);
+          response.send(error);
         });
     })
     .catch((error) => {
