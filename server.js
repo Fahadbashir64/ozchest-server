@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
       pageSize: 10,
     }),
   })
-    .then((res) => res.json())
+    .then((response) => response.json())
     .then((data) => {
       // Do some stuff ...
       console.log("dell");
