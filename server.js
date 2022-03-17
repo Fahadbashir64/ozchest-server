@@ -7,10 +7,8 @@ import path from "path";
 import { response } from "express";
 app.use(cors());
 
-/*app.get("/signin", (req, res) => {
+app.get("/", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
-  console.log("hello1");
-
   fetch("https://api.prepaidforge.com/v1/1.0/findProductPage", {
     method: "POST",
     headers: {
@@ -30,7 +28,7 @@ app.use(cors());
       res.send(data);
     })
     .catch((err) => console.log(err));
-});*/
+});
 
 var token;
 
@@ -60,7 +58,7 @@ function groupBy(key, array) {
   return result;
 }
 
-app.get("/", (req, res) => {
+/*app.get("/", (req, res) => {
   console.log(token);
   try {
     fetch("https://api.prepaidforge.com/v1/1.0/signInWithApi", {
@@ -113,7 +111,7 @@ app.get("/", (req, res) => {
   } catch {
     res.send("ERR: ");
   }
-});
+});*/
 const PORT = 8000;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
