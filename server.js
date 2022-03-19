@@ -10,7 +10,7 @@ app.use(cors());
 app.get("/", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   fetch("https://api.prepaidforge.com/v1/1.0/findProductPage", {
-    method: "GET",
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
