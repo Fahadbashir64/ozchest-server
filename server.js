@@ -9,16 +9,16 @@ app.use(cors());
 
 app.get("/", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
-  fetch("https://api.prepaidforge.com/v1/1.0/findAllProducts", {
+  fetch("https://api.prepaidforge.com/v1/1.0/findProductPage", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
-    /*body: JSON.stringify({
+    body: JSON.stringify({
       // your expected POST request payload goes here
-      page: 401,
-      pageSize: 10,
-    }),*/
+      page: 101,
+      pageSize: 30,
+    }),
   })
     .then((response) => response.json())
     .then((data) => {
