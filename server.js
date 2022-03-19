@@ -32,7 +32,7 @@ app.get("/", (req, res) => {
 
 app.get("/products", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
-  fetch("https://api.prepaidforge.com/v1/1.0/findAllProductse", {
+  fetch("https://api.prepaidforge.com/v1/1.0/findAllProducts", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
