@@ -25,7 +25,7 @@ app.get("/", (req, res) => {
       // Do some stuff ...
       console.log("dell");
       console.log(data);
-      res.send(data.slice(0, 20));
+      res.send(data);
     })
     .catch((err) => console.log(err));
 });
