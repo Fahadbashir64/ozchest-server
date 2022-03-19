@@ -17,7 +17,7 @@ app.get("/", (req, res) => {
     body: JSON.stringify({
       // your expected POST request payload goes here
       page: 101,
-      pageSize: 30,
+      pageSize: 20,
     }),
   })
     .then((response) => response.json())
@@ -25,7 +25,7 @@ app.get("/", (req, res) => {
       // Do some stuff ...
       console.log("dell");
       console.log(data);
-      res.send(data.slice(1000, 1040));
+      res.send(data);
     })
     .catch((err) => console.log(err));
 });
