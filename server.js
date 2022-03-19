@@ -29,7 +29,7 @@ app.use(cors());
     })
     .catch((err) => console.log(err));
 });*/
-
+app.get("/signin", (req, res) => {});
 app.get("/", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   fetch("https://api.prepaidforge.com/v1/1.0/findAllProducts", {
