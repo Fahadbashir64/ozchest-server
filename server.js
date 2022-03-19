@@ -30,6 +30,24 @@ app.get("/", (req, res) => {
     .catch((err) => console.log(err));
 });
 
+app.get("/products", (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  fetch("https://api.prepaidforge.com/v1/1.0/findAllProductse", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // Do some stuff ...
+      console.log("dell");
+      console.log(data);
+      res.send(data);
+    })
+    .catch((err) => console.log(err));
+});
+
 var token;
 
 /*app.get("/", (req, res) => {
