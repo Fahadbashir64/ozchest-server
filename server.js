@@ -7,7 +7,7 @@ import path from "path";
 import { response } from "express";
 app.use(cors());
 
-app.get("/", (req, res) => {
+/*app.get("/", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   fetch("https://api.prepaidforge.com/v1/1.0/findProductPage", {
     method: "POST",
@@ -28,9 +28,9 @@ app.get("/", (req, res) => {
       res.send(data);
     })
     .catch((err) => console.log(err));
-});
+});*/
 
-app.get("/products", (req, res) => {
+app.get("/", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   fetch("https://api.prepaidforge.com/v1/1.0/findAllProducts", {
     method: "GET",
@@ -43,7 +43,7 @@ app.get("/products", (req, res) => {
       // Do some stuff ...
       console.log("dell");
       console.log(data);
-      res.send(data);
+      res.send(data.slice(1000, 1040));
     })
     .catch((err) => console.log(err));
 });
