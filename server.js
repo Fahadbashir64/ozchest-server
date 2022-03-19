@@ -17,7 +17,7 @@ app.get("/", (req, res) => {
     body: JSON.stringify({
       // your expected POST request payload goes here
       page: 101,
-      pageSize: 30,
+      pageSize: 20,
     }),
   })
     .then((response) => response.json())
