@@ -3,21 +3,26 @@ const app = express();
 import cors from "cors";
 import fetch from "node-fetch";
 import mongoose from "mongoose";
-import Buyer from "./models/Buyer";
+import Buyer from "./models/Buyer.js";
 import path from "path";
 // import { send } from "process";
 import { response } from "express";
 
 //db connection
 
-mongoose.Promise = global.Promise;
-mongoose.connect("mongodb://localhost:27017/Buyer");
-mongoose.connection.on("connected", () => {
-  console.log("Database is connected");
-});
-mongoose.connection.on("error", () => {
-  console.log("error occured");
-});
+const connection_url =
+  "mongodb+srv://Admin:123456asd@cluster0.is0ns.mongodb.net/rental?retryWrites=true&w=majority";
+mongoose
+  .connect(connection_url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Successfully connected to Database");
+  })
+  .catch((error) => {
+    console.log("Cannot connect to DB : ", error);
+  });
 
 // middlewares
 app.use(cors());

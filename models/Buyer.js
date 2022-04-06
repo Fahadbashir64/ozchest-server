@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const BuyerSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
@@ -6,4 +6,4 @@ const BuyerSchema = mongoose.Schema({
   balance: { type: Number },
 });
 
-module.exports = mongoose.model("Buyer", BuyerSchema);
+export default mongoose.model("Buyer", BuyerSchema);
