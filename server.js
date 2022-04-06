@@ -101,9 +101,9 @@ app.get("/", (req, res) => {
       console.log(data);
       // res.send(data.slice(1000, 1040));
       res.send(data);
-      Product.insertMany(data)
+      /*Product.insertMany(data)
         .then((docs) => {})
-        .catch((err) => {});
+        .catch((err) => {});*/
     })
     .catch((err) => console.log(err));
 });
