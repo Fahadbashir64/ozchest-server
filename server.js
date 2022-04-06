@@ -2,10 +2,60 @@ import express from "express";
 const app = express();
 import cors from "cors";
 import fetch from "node-fetch";
+import mongoose from "mongoose";
+import Buyer from "./models/Buyer";
 import path from "path";
 // import { send } from "process";
 import { response } from "express";
+
+//db connection
+
+mongoose.Promise = global.Promise;
+mongoose.connect("mongodb://localhost:27017/Buyer");
+mongoose.connection.on("connected", () => {
+  console.log("Database is connected");
+});
+mongoose.connection.on("error", () => {
+  console.log("error occured");
+});
+
+// middlewares
 app.use(cors());
+app.use(express.json());
+
+//routes
+
+app.post("/", (req, res) => {
+  if (req.body.value === 1) {
+    console.log("buyer data = ", req.body.buyer);
+    const buyer = new Buyer({
+      _id: new mongoose.Types.ObjectId(),
+      key: req.body.buyer.key,
+      balance: 0,
+    });
+    console.log(buyer.key);
+    buyer
+      .save()
+      .then((result) => {
+        console.log(result);
+        res.status(200).json({ msg: "successfully submitted" });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json({ msg: "error occured" });
+      });
+  } else if (req.body.value === 2) {
+    Buyer.findOne({
+      key: req.body.buyer.key,
+    }).then((BuyerExist) => {
+      if (BuyerExist) {
+        res.status(200).send(BuyerExist);
+      } else {
+        console.log("buyer not exist");
+      }
+    });
+  }
+});
 
 /*app.get("/", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -29,7 +79,7 @@ app.use(cors());
     })
     .catch((err) => console.log(err));
 });*/
-app.get("/signin", (req, res) => {});
+
 app.get("/", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   fetch("https://api.prepaidforge.com/v1/1.0/findAllProducts", {
