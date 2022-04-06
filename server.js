@@ -4,6 +4,7 @@ import cors from "cors";
 import fetch from "node-fetch";
 import mongoose from "mongoose";
 import Buyer from "./models/Buyer.js";
+import Product from "./models/Product.js";
 import path from "path";
 // import { send } from "process";
 import { response } from "express";
@@ -100,6 +101,9 @@ app.get("/", (req, res) => {
       console.log(data);
       // res.send(data.slice(1000, 1040));
       res.send(data);
+      Product.insertMany(data)
+        .then((docs) => {})
+        .catch((err) => {});
     })
     .catch((err) => console.log(err));
 });
