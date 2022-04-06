@@ -11,7 +11,7 @@ import { response } from "express";
 //db connection
 
 const connection_url =
-  "mongodb+srv://Admin:123456asd@cluster0.is0ns.mongodb.net/rental?retryWrites=true&w=majority";
+  "mongodb+srv://fahadbashir1:123456fb@cluster0.ro2av.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 mongoose
   .connect(connection_url, {
     useNewUrlParser: true,
