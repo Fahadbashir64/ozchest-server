@@ -285,8 +285,10 @@ app.get("/", (req, res) => {
           },
 
           body: JSON.stringify({
-            types: ["TEXT", "SCAN"],
-            skus: ["Netflix-25-Eur"],
+            sku: "Netflix-25-EUR",
+            price: 25.14,
+            codeType: "SCAN",
+            customOrderReference: "myOwnReference-00001",
           }),
         })
           .then((response) => response.json())
