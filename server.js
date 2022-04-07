@@ -207,7 +207,7 @@ app.post("/", (req, res) => {
     .catch((err) => console.log(err));
 });*/
 
-app.get("/", (req, res) => {
+/*app.get("/", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   fetch("https://api.prepaidforge.com/v1/1.0/findAllProducts", {
     method: "GET",
@@ -222,12 +222,12 @@ app.get("/", (req, res) => {
       console.log(data);
       // res.send(data.slice(1000, 1040));
       res.send(data);
-      /*Product.insertMany(data)
+      Product.insertMany(data)
         .then((docs) => {})
-        .catch((err) => {});*/
+        .catch((err) => {});
     })
     .catch((err) => console.log(err));
-});
+});*/
 
 var token;
 
@@ -257,7 +257,7 @@ function groupBy(key, array) {
   return result;
 }
 
-/*app.get("/", (req, res) => {
+app.get("/", (req, res) => {
   console.log(token);
   try {
     fetch("https://api.prepaidforge.com/v1/1.0/signInWithApi", {
@@ -310,7 +310,7 @@ function groupBy(key, array) {
   } catch {
     res.send("ERR: ");
   }
-});*/
+});
 const PORT = 8000;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
