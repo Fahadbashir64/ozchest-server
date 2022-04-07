@@ -277,40 +277,40 @@ app.get("/", (req, res) => {
       // var stocks = groupBy("skus", data);
       console.log("hello");
       console.log(data.apiToken);
-      res.send(data);
-    });
-  /* fetch("https://api.prepaidforge.com/v1/1.0/createApiOrder", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-PrepaidForge-Api-Token": `${data.apiToken}`,
-          },
+      // res.send(data);
 
-          body: JSON.stringify({
-            sku: "Netflix-25-EUR",
-            price: 25.14,
-            codeType: "SCAN",
-            customOrderReference: "myOwnReference-00001",
-          }),
-        })
-          .then((response) => response.json())
-          .then((data1) => {
-            // enter you logic when the fetch is successful
-            // var stocks = groupBy("skus", data);
-            console.log("hello22");
-            console.log(data1);
-            response.send(data1);
-          })
-          .catch((error) => {
-            // enter your logic for when there is an error (ex. error toast)
-            console.log(error);
-            response.send(error);
-          });
+      fetch("https://api.prepaidforge.com/v1/1.0/createApiOrder", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-PrepaidForge-Api-Token": `${data.apiToken}`,
+        },
+
+        body: JSON.stringify({
+          sku: "Netflix-25-EUR",
+          price: 25.14,
+          codeType: "SCAN",
+          customOrderReference: "myOwnReference-00001",
+        }),
       })
-      .catch((error) => {
-        // enter your logic for when there is an error (ex. error toast)
-        res.send(error);
-      });*/
+        .then((response) => response.json())
+        .then((data1) => {
+          // enter you logic when the fetch is successful
+          // var stocks = groupBy("skus", data);
+          console.log("hello22");
+          console.log(data1);
+          res.send(data1);
+        })
+        .catch((error) => {
+          // enter your logic for when there is an error (ex. error toast)
+          console.log(error);
+          res.send(error);
+        });
+    })
+    .catch((error) => {
+      // enter your logic for when there is an error (ex. error toast)
+      res.send(error);
+    });
 });
 const PORT = 8000;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
