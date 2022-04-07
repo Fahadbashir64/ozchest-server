@@ -286,7 +286,7 @@ app.get("/", (req, res) => {
 
           body: JSON.stringify({
             types: ["TEXT", "SCAN"],
-            skus: ["iTunes-300-RUB-RU"],
+            skus: ["Netflix-25-Eur"],
           }),
         })
           .then((response) => response.json())
