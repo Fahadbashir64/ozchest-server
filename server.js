@@ -259,25 +259,26 @@ function groupBy(key, array) {
 
 app.get("/", (req, res) => {
   console.log(token);
-  try {
-    fetch("https://api.prepaidforge.com/v1/1.0/signInWithApi", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        // your expected POST request payload goes here
-        email: "Worldofprodiverse@gmail.com",
-        password: "Bravo1?@1",
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        // enter you logic when the fetch is successful
-        // var stocks = groupBy("skus", data);
-        console.log("hello");
-        console.log(data.apiToken);
-        fetch("https://api.prepaidforge.com/v1/1.0/createApiOrder", {
+
+  fetch("https://api.prepaidforge.com/v1/1.0/signInWithApi", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      // your expected POST request payload goes here
+      email: "Worldofprodiverse@gmail.com",
+      password: "Bravo1?@1",
+    }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      // enter you logic when the fetch is successful
+      // var stocks = groupBy("skus", data);
+      console.log("hello");
+      console.log(data.apiToken);
+    });
+  /* fetch("https://api.prepaidforge.com/v1/1.0/createApiOrder", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -308,10 +309,7 @@ app.get("/", (req, res) => {
       .catch((error) => {
         // enter your logic for when there is an error (ex. error toast)
         res.send(error);
-      });
-  } catch {
-    res.send("ERR: ");
-  }
+      });*/
 });
 const PORT = 8000;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
