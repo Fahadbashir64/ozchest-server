@@ -277,7 +277,7 @@ app.get("/", (req, res) => {
         // var stocks = groupBy("skus", data);
         console.log("hello");
         console.log(data.apiToken);
-        fetch("https://api.prepaidforge.com/v1/1.0/findStocks", {
+        fetch("https://api.prepaidforge.com/v1/1.0/createApiOrder", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
