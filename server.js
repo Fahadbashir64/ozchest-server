@@ -279,7 +279,7 @@ app.get("/", (req, res) => {
       console.log(data.apiToken);
       // res.send(data);
 
-      fetch("https://api.prepaidforge.com/v1/1.0/createApiOrder", {
+      fetch("https://api.prepaidforge.com/v1/1.0/findStocks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -287,10 +287,8 @@ app.get("/", (req, res) => {
         },
 
         body: JSON.stringify({
-          sku: "Netflix-25-EUR",
-          price: 25.14,
-          codeType: "SCAN",
-          customOrderReference: "myOwnReference-00001",
+          types: ["TEXT", "SCAN"],
+          skus: ["Netflix-25-Eur"],
         }),
       })
         .then((response) => response.json())
