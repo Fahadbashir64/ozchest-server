@@ -5,7 +5,13 @@ import fetch from "node-fetch";
 import mongoose from "mongoose";
 import Buyer from "./models/Buyer.js";
 import Product from "./models/Product.js";
-import path from "path";
+import Country from "./models/Country.js";
+import Currency from "./models/Currency.js";
+
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+import session from "express-session";
+import jwt from "jsonwebtoken";
 // import { send } from "process";
 import { response } from "express";
 
@@ -28,7 +34,20 @@ mongoose
 // middlewares
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(
+  session({
+    key: "userId",
+    secret: "subscribe",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      expires: 60 * 5,
+    },
+  })
+);
 //routes
 
 app.post("/", (req, res) => {
@@ -55,11 +74,113 @@ app.post("/", (req, res) => {
       key: req.body.buyer.key,
     }).then((BuyerExist) => {
       if (BuyerExist) {
-        res.status(200).send(BuyerExist);
+        const token = jwt.sign({ userId: BuyerExist._id }, "talhakhan", {
+          expiresIn: "1h",
+        });
+        res.status(200).send({ BuyerExist, token });
       } else {
         console.log("buyer not exist");
       }
     });
+  } else if (req.body.value === 3) {
+    Country.findOne({ brand: req.body.brand }).then((res1) => {
+      Currency.findOne({ brand: req.body.brand, country: res1.names[0] }).then(
+        (res2) => {
+          const data = {
+            countries: res1.names,
+            curr: res2,
+          };
+          res.status(200).send(data);
+        }
+      );
+    });
+    /* Country.findOne({ brand: req.body.brand }).then((res1) => {
+      res1.names.forEach((element) => {
+        var curr = [];
+        Product.find({ brand: req.body.brand, countries: element }).then(
+          (res2) => {
+            res2.forEach((element2) => {
+              if (curr.indexOf(element2.faceValue.price) === -1)
+                curr.push(element2.faceValue.amount);
+            });
+            curr = curr.sort(function (a, b) {
+              return a - b;
+            });
+            const temp = new Currency({
+              _id: new mongoose.Types.ObjectId(),
+              brand: req.body.brand,
+              country: element,
+              code: res2[0].faceValue.currency,
+              price: curr,
+            });
+
+            temp
+              .save()
+              .then((result) => {
+                console.log(result);
+                // res.status(200).json({ msg: "successfully submitted" });
+              })
+              .catch((err) => {
+                console.log(err);
+                //res.status(500).json({ msg: "error occured" });
+              });
+          }
+        );
+      });
+      //res.status(200).send(res1.names);
+    });
+     var country = [];
+    Product.find().then((res1) => {
+      if (res1) {
+        res1.forEach((element) => {
+          if (
+            element.brand === req.body.brand &&
+            country.indexOf(element.countries[0]) === -1
+          )
+            country.push(element.countries[0]);
+        });
+      }
+      const countryy = new Country({
+        _id: new mongoose.Types.ObjectId(),
+        brand: req.body.brand,
+        names: country,
+      });
+
+      countryy
+        .save()
+        .then((result) => {
+          console.log(result);
+          res.status(200).json({ msg: "successfully submitted" });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(500).json({ msg: "error occured" });
+        });
+      // res.status(200).send(country);
+    });*/
+
+    /*console.log("found");
+    console.log(req.body);
+    Product.findOne({
+      brand: req.body.brand,
+      amount: req.body.amount,
+      currency: req.body.currency,
+    }).then((BuyerExist) => {
+      if (BuyerExist) {
+        console.log("found");
+        console.log(BuyerExist.countries);
+        console.log(BuyerExist);
+        res.status(200).send(BuyerExist.countries);
+      } else {
+        console.log("buyer not exist");
+      }
+    });*/
+  } else if (req.body.value === 4) {
+    Currency.findOne({ brand: req.body.brand, country: req.body.country }).then(
+      (res2) => {
+        res.status(200).send(res2);
+      }
+    );
   }
 });
 
