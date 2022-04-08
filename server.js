@@ -306,36 +306,58 @@ app.get("/", (req, res) => {
     "faceValue.amount": 20,
   }).then((res2) => {
     if (res2) {
-      fetch("https://api.prepaidforge.com/v1/1.0/findStocks", {
+      fetch("https://api.prepaidforge.com/v1/1.0/signInWithApi", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-PrepaidForge-Api-Token":
-            "d1eafd1903776da624c47aee6c6e00a1e7b9adda129dd484742599df6675b331",
         },
-
         body: JSON.stringify({
-          types: ["TEXT", "SCAN"],
-          skus: ["Amazon"],
+          // your expected POST request payload goes here
+          email: "Worldofprodiverse@gmail.com",
+          password: "Bravo1?@1",
         }),
       })
-        .then((response) => response.json())
-        .then((data1) => {
-          res.send(data1);
+        .then((res) => res.json())
+        .then((data) => {
+          fetch("https://api.prepaidforge.com/v1/1.0/findStocks", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-PrepaidForge-Api-Token": data.apiToken,
+            },
+
+            body: JSON.stringify({
+              types: ["TEXT", "SCAN"],
+              skus: ["Amazon"],
+            }),
+          })
+            .then((response) => response.json())
+            .then((data1) => {
+              res.send(data1);
+              // enter you logic when the fetch is successful
+              // var stocks = groupBy("skus", data);
+              var temp = [];
+              data1.forEach((element) => {
+                if (element.quantity != 0) temp.push(element);
+              });
+              temp = temp.sort(function (a, b) {
+                return a.purchasePrice - b.purchasePrice;
+              });
+              // res.send(temp[0]);
+            })
+            .catch((error) => {
+              // enter your logic for when there is an error (ex. error toast)
+              console.log(error);
+              res.send(error);
+            });
           // enter you logic when the fetch is successful
           // var stocks = groupBy("skus", data);
-          var temp = [];
-          data1.forEach((element) => {
-            if (element.quantity != 0) temp.push(element);
-          });
-          temp = temp.sort(function (a, b) {
-            return a.purchasePrice - b.purchasePrice;
-          });
-          // res.send(temp[0]);
+          console.log("hello");
+          console.log(data.apiToken);
+          //res.send(data);
         })
         .catch((error) => {
           // enter your logic for when there is an error (ex. error toast)
-          console.log(error);
           res.send(error);
         });
     }
