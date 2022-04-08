@@ -300,9 +300,10 @@ function groupBy(key, array) {
 app.get("/", (req, res) => {
   console.log(token);
   Product.findOne({
-    brand: "Neosurf",
+    brand: "Amazon",
     countries: "uk",
     currencyCode: "GBP",
+    faceValue: { amount: 20 },
   }).then((res2) => {
     res.send(res2);
   });
