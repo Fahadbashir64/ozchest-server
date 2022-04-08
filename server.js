@@ -305,6 +305,7 @@ app.get("/", (req, res) => {
     currencyCode: "GBP",
     "faceValue.amount": 20,
   }).then((res2) => {
+    res.send(res2.sku);
     fetch("https://api.prepaidforge.com/v1/1.0/findStocks", {
       method: "POST",
       headers: {
@@ -320,7 +321,6 @@ app.get("/", (req, res) => {
     })
       .then((response) => response.json())
       .then((data1) => {
-        res.send(res2.sku);
         // enter you logic when the fetch is successful
         // var stocks = groupBy("skus", data);
         var temp = [];
