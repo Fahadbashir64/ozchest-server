@@ -188,8 +188,7 @@ app.post("/", (req, res) => {
       currencyCode: req.body.code,
       faceValue: req.body.price,
     }).then((res2) => {
-      res.send(res2);
-      fetch("https://api.prepaidforge.com/v1/1.0/findStocks", {
+      /*fetch("https://api.prepaidforge.com/v1/1.0/findStocks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -219,8 +218,7 @@ app.post("/", (req, res) => {
           // enter your logic for when there is an error (ex. error toast)
           console.log(error);
           res.send(error);
-        });
-
+        });*/
       //res.status(200).send(res2);
     });
   }
@@ -301,8 +299,15 @@ function groupBy(key, array) {
 
 app.get("/", (req, res) => {
   console.log(token);
-
-  fetch("https://api.prepaidforge.com/v1/1.0/signInWithApi", {
+  Product.findOne({
+    brand: "Amazon",
+    countries: "uk",
+    currencyCode: "GBP",
+    faceValue: 20,
+  }).then((res2) => {
+    res.send(res2);
+  });
+  /*fetch("https://api.prepaidforge.com/v1/1.0/signInWithApi", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -324,7 +329,7 @@ app.get("/", (req, res) => {
     .catch((error) => {
       // enter your logic for when there is an error (ex. error toast)
       res.send(error);
-    });
+    });*/
 });
 const PORT = 8000;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
