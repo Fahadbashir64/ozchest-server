@@ -223,9 +223,9 @@ app.post("/", (req, res) => {
     });
   } else if (req.body.value === 6) {
     let currencyConverter = new CC({
-      from: req.body.from,
-      to: req.body.to,
-      amount: Number(req.body.amount),
+      from: "AED",
+      to: "USD",
+      amount: 100,
     });
     currencyConverter.convert().then((response) => {
       res.send(response);
