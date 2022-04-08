@@ -225,7 +225,7 @@ app.post("/", (req, res) => {
     let currencyConverter = new CC({
       from: req.body.from,
       to: req.body.to,
-      amount: req.body.amount,
+      amount: Number(req.body.amount),
     });
     currencyConverter.convert().then((response) => {
       res.send(response);
