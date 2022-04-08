@@ -221,7 +221,7 @@ app.post("/", (req, res) => {
         });
       //res.status(200).send(res2);
     });
-  } else if (req.body.value == 6) {
+  } else if (req.body.value === 6) {
     let currencyConverter = new CC({
       from: req.body.from,
       to: req.body.to,
