@@ -7,6 +7,7 @@ import Buyer from "./models/Buyer.js";
 import Product from "./models/Product.js";
 import Country from "./models/Country.js";
 import Currency from "./models/Currency.js";
+import CC from "currency-converter-lt";
 
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
@@ -219,6 +220,15 @@ app.post("/", (req, res) => {
           res.send(error);
         });
       //res.status(200).send(res2);
+    });
+  } else if (req.body.value == 6) {
+    let currencyConverter = new CC({
+      from: req.body.from,
+      to: req.body.to,
+      amount: req.body.amount,
+    });
+    currencyConverter.convert().then((response) => {
+      res.send(response);
     });
   }
 });
