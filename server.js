@@ -188,11 +188,13 @@ app.post("/", (req, res) => {
       currencyCode: req.body.code,
       faceValue: req.body.price,
     }).then((res2) => {
+      res.send(res2);
       fetch("https://api.prepaidforge.com/v1/1.0/findStocks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-PrepaidForge-Api-Token": req.body.apitoken,
+          "X-PrepaidForge-Api-Token":
+            "d1eafd1903776da624c47aee6c6e00a1e7b9adda129dd484742599df6675b331",
         },
 
         body: JSON.stringify({
@@ -317,7 +319,7 @@ app.get("/", (req, res) => {
       // var stocks = groupBy("skus", data);
       console.log("hello");
       console.log(data.apiToken);
-      res.send(data);
+      //res.send(data);
     })
     .catch((error) => {
       // enter your logic for when there is an error (ex. error toast)
