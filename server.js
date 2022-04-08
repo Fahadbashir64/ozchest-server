@@ -303,7 +303,7 @@ app.get("/", (req, res) => {
     brand: "PlayStation",
     countries: "pl",
     currencyCode: "PLN",
-    faceValue: { amount: 20 },
+    "faceValue.amount": 25,
   }).then((res2) => {
     res.send(res2);
   });
