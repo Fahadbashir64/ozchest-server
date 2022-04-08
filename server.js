@@ -228,7 +228,7 @@ app.post("/", (req, res) => {
       amount: req.body.amount,
     });
     currencyConverter.convert().then((response) => {
-      res.send(response.data);
+      res.send({ cur: response });
     });
   }
 });
