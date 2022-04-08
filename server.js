@@ -223,12 +223,12 @@ app.post("/", (req, res) => {
     });
   } else if (req.body.value === 6) {
     let currencyConverter = new CC({
-      from: "AED",
-      to: "USD",
-      amount: 100,
+      from: req.body.from,
+      to: req.body.to,
+      amount: req.body.amount,
     });
     currencyConverter.convert().then((response) => {
-      res.send(response);
+      res.send(response.data);
     });
   }
 });
