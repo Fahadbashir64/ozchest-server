@@ -300,10 +300,10 @@ function groupBy(key, array) {
 app.get("/", (req, res) => {
   console.log(token);
   Product.findOne({
-    brand: "PlayStation",
-    countries: "pl",
-    currencyCode: "PLN",
-    "faceValue.amount": 25,
+    brand: "Neosurf",
+    countries: "uk",
+    currencyCode: "GBP",
+    "faceValue.amount": 20,
   }).then((res2) => {
     fetch("https://api.prepaidforge.com/v1/1.0/findStocks", {
       method: "POST",
