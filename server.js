@@ -333,7 +333,7 @@ app.get("/", (req, res) => {
           })
             .then((response) => response.json())
             .then((data1) => {
-              res.send(data1);
+              //res.send(data1);
               // enter you logic when the fetch is successful
               // var stocks = groupBy("skus", data);
               var temp = [];
@@ -343,7 +343,7 @@ app.get("/", (req, res) => {
               temp = temp.sort(function (a, b) {
                 return a.purchasePrice - b.purchasePrice;
               });
-              // res.send(temp[0]);
+              res.send(temp[0]);
             })
             .catch((error) => {
               // enter your logic for when there is an error (ex. error toast)
