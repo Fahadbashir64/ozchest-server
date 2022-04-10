@@ -243,16 +243,17 @@ app.post("/", (req, res) => {
         price: req.body.price,
         codeType: req.body.type,
       }),
-    })
-      .then((response) => response.json())
-      .then((data1) => {
-        Buyer.findAndModify({
-          query: { key: req.body.user },
-          update: { balance: balance - req.body.total },
-        }).then((result) => {
-          res.send(data1);
-        });
+    }).then((data1) => {
+      console.log("eee");
+      Buyer.findAndModify({
+        query: { key: req.body.user },
+        update: { balance: balance - req.body.total },
+      }).then((result) => {
+        res.send(data1);
       });
+      //console.log(data1);
+      // res.send(data1);
+    });
   }
 });
 
