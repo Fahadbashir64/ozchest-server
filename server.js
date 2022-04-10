@@ -242,17 +242,18 @@ app.post("/", (req, res) => {
         sku: req.body.product,
         price: req.body.price,
         codeType: req.body.type,
+        customOrderReference: "myOwnReference-00001",
       }),
     }).then((data1) => {
       console.log("eee");
-      /*Buyer.findAndModify({
+      Buyer.findAndModify({
         query: { key: req.body.user },
-        update: { balance: balance - req.body.total },
+        update: { balance: req.body.balance - req.body.total },
       }).then((result) => {
         res.send(data1);
-      });*/
+      });
       //console.log(data1);
-      res.send(data1);
+      //res.send(data1);
     });
   }
 });
