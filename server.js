@@ -242,14 +242,13 @@ app.post("/", (req, res) => {
         sku: req.body.product,
         price: req.body.price,
         codeType: req.body.type,
-        customOrderReference: "myOwnReference-00001",
       }),
     }).then((data1) => {
       console.log("eee");
-      Buyer.findAndModify({
-        query: { key: req.body.user },
-        update: { balance: req.body.balance - req.body.total },
-      }).then((result) => {
+      Buyer.findOneAndUpdate(
+        { key: req.body.user },
+        { balance: req.body.balance - req.body.total }
+      ).then((result) => {
         res.send(data1);
       });
       //console.log(data1);
