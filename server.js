@@ -245,14 +245,14 @@ app.post("/", (req, res) => {
       }),
     }).then((data1) => {
       console.log("eee");
-      Buyer.findAndModify({
+      /*Buyer.findAndModify({
         query: { key: req.body.user },
         update: { balance: balance - req.body.total },
       }).then((result) => {
         res.send(data1);
-      });
+      });*/
       //console.log(data1);
-      // res.send(data1);
+      res.send(data1);
     });
   }
 });
