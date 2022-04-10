@@ -230,6 +230,29 @@ app.post("/", (req, res) => {
     currencyConverter.convert().then((response) => {
       res.send({ cur: response });
     });
+  } else if (req.body.value === 7) {
+    fetch("https://api.prepaidforge.com/v1/1.0/createApiOrder", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-PrepaidForge-Api-Token": req.body.apitoken,
+      },
+
+      body: JSON.stringify({
+        sku: req.body.product,
+        price: req.body.price,
+        codeType: req.body.type,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data1) => {
+        Buyer.findAndModify({
+          query: { key: req.body.user },
+          update: { balance: balance - req.body.total },
+        }).then((result) => {
+          res.send(data1);
+        });
+      });
   }
 });
 
