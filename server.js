@@ -272,21 +272,15 @@ app.post("/", (req, res) => {
               subject: "Gift Card From Ozchest",
               text: `${req.body.product}  Link: ${link}`,
             };
-
+            console.log(mailOptions.text);
             transporter.sendMail(mailOptions, function (error, info) {
               if (error) {
-                res
-                  .json({
-                    msg: "fail",
-                  })
-                  .send(error);
+                console.log("mail failed");
               } else {
-                res.json({
-                  msg: "success",
-                });
+                console.log("mail success");
+                res.send(data1);
               }
             });
-            res.send(data1);
           }
         });
         //console.log(data1);
@@ -305,6 +299,7 @@ app.post("/balance", (req, res) => {
     }
   });
 });
+
 /*app.get("/", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   fetch("https://api.prepaidforge.com/v1/1.0/findProductPage", {
