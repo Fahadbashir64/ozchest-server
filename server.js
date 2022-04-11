@@ -300,7 +300,8 @@ app.post("/balance", (req, res) => {
     key: req.body.user,
   }).then((res2) => {
     if (res2) {
-      res.send(res2.balance);
+      console.log(res2.balance);
+      res.send({ balance: res2.balance });
     }
   });
 });
