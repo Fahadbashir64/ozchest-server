@@ -245,50 +245,65 @@ app.post("/", (req, res) => {
         codeType: req.body.type,
       }),
     }).then((data1) => {
-      console.log("eee");
-      Buyer.findOneAndUpdate(
-        { key: req.body.user },
-        { balance: req.body.balance - req.body.total }
-      ).then((result) => {
-        const frommail = "fahadbashir644@gmail.com";
-        const password = "84808741fb";
-        const tomail = "ranafahad369@gmail.com";
-        var transporter = nodemailer.createTransport({
-          service: "gmail",
+      if (data1) {
+        console.log("eee");
+        Buyer.findOneAndUpdate(
+          { key: req.body.user },
+          { balance: req.body.balance - req.body.total }
+        ).then((result) => {
+          if (result) {
+            const frommail = "ozchest1@gmail.com";
+            const password = "ozchest@123";
+            const tomail = req.body.email;
+            var transporter = nodemailer.createTransport({
+              service: "gmail",
 
-          auth: {
-            user: frommail,
-            pass: password,
-          },
-        });
-
-        var mailOptions = {
-          from: frommail,
-          to: tomail,
-          subject: "Sending Email using Node.js",
-          text: `sending mail using Node.js was running successfully. Hope it help you. For more code and project Please Refer my github page`,
-          // html: '<h1>Hi Smartherd</h1><p>Your Messsage</p>'
-        };
-
-        transporter.sendMail(mailOptions, function (error, info) {
-          if (error) {
-            res.json({
-              msg: "fail",
+              auth: {
+                user: frommail,
+                pass: password,
+              },
             });
-          } else {
-            res.json({
-              msg: "success",
+            var link;
+            if (req.body.type === "TEXT") link = data1.code;
+            else if (req.body.type === "SCAN") link = data1.image.downloadLink;
+            var mailOptions = {
+              from: frommail,
+              to: tomail,
+              subject: "Gift Card From Ozchest",
+              text: `${req.body.product}  Link: ${link}`,
+            };
+
+            transporter.sendMail(mailOptions, function (error, info) {
+              if (error) {
+                res
+                  .json({
+                    msg: "fail",
+                  })
+                  .send(error);
+              } else {
+                res.json({
+                  msg: "success",
+                });
+              }
             });
+            res.send(data1);
           }
         });
-        res.send(data1);
-      });
-      //console.log(data1);
-      //res.send(data1);
+        //console.log(data1);
+        //res.send(data1);
+      }
     });
   }
 });
-
+app.post("/balance", (req, res) => {
+  Buyer.findOne({
+    key: req.body.user,
+  }).then((res2) => {
+    if (res2) {
+      res.send(res2.balance);
+    }
+  });
+});
 /*app.get("/", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   fetch("https://api.prepaidforge.com/v1/1.0/findProductPage", {
