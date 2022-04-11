@@ -15,6 +15,7 @@ import session from "express-session";
 import jwt from "jsonwebtoken";
 // import { send } from "process";
 import { response } from "express";
+import nodemailer from "nodemailer";
 
 //db connection
 
@@ -249,6 +250,37 @@ app.post("/", (req, res) => {
         { key: req.body.user },
         { balance: req.body.balance - req.body.total }
       ).then((result) => {
+        const frommail = "fahadbashir644@gmail.com";
+        const password = "84808741fb";
+        const tomail = "ranafahad369@gmail.com";
+        var transporter = nodemailer.createTransport({
+          service: "gmail",
+
+          auth: {
+            user: frommail,
+            pass: password,
+          },
+        });
+
+        var mailOptions = {
+          from: frommail,
+          to: tomail,
+          subject: "Sending Email using Node.js",
+          text: `sending mail using Node.js was running successfully. Hope it help you. For more code and project Please Refer my github page`,
+          // html: '<h1>Hi Smartherd</h1><p>Your Messsage</p>'
+        };
+
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            res.json({
+              msg: "fail",
+            });
+          } else {
+            res.json({
+              msg: "success",
+            });
+          }
+        });
         res.send(data1);
       });
       //console.log(data1);
