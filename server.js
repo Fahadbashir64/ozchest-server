@@ -299,7 +299,7 @@ app.post("/balance", (req, res) => {
     }
   });
 });
-app.post("/ipn", (req, res) => {
+app.get("/ipn", (req, res) => {
   res.send(req.body);
 });
 
