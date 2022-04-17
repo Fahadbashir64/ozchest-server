@@ -299,6 +299,9 @@ app.post("/balance", (req, res) => {
     }
   });
 });
+app.post("/ipn", (req, res) => {
+  res.send(req.body);
+});
 
 /*app.get("/", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
