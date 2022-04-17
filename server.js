@@ -16,6 +16,7 @@ import jwt from "jsonwebtoken";
 // import { send } from "process";
 import { response } from "express";
 import nodemailer from "nodemailer";
+import crypto from "crypto";
 
 //db connection
 
@@ -79,6 +80,7 @@ app.post("/", (req, res) => {
         const token = jwt.sign({ userId: BuyerExist._id }, "talhakhan", {
           expiresIn: "1h",
         });
+        sessionStorage.setItem("user", req.body.buyer.key);
         res.status(200).send({ BuyerExist, token });
       } else {
         console.log("buyer not exist");
@@ -302,9 +304,39 @@ app.post("/balance", (req, res) => {
 app.post("/ipn", (req, res) => {
   console.log("ipn-responses");
   console.log(req.body);
-  res.json({ status: ok });
-});
+  const hmac = crypto.createHmac("sha512", "7bu5VBtCxirdmTD98l4Sm2nfn6t4b8KS");
+  hmac.update(JSON.stringify(req.body, Object.keys(req.body).sort()));
+  const signature = hmac.digest("hex");
+  if (
+    req.body.payment_status === "finished" &&
+    signature === req.headers["x-nowpayments-sig"]
+  ) {
+    console.log("valid");
+    let currencyConverter = new CC({
+      from: req.body.price_currency,
+      to: "eur",
+      amount: req.body.price_amount,
+    });
+    currencyConverter.convert().then((response) => {
+      console.log(response);
+      Buyer.findOne({
+        key: req.body.order_id,
+      }).then((res2) => {
+        if (res2) {
+          Buyer.findOneAndUpdate(
+            { key: req.body.order_id },
+            { balance: Number(response) + Number(res2.balance) }
+          ).then((result) => {
+            console.log("updated");
+          });
+        }
+      });
+    });
 
+    //res.send({ status: "finished" });
+  }
+  res.json({ status: 200 });
+});
 /*app.get("/", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   fetch("https://api.prepaidforge.com/v1/1.0/findProductPage", {
