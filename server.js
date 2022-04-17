@@ -304,7 +304,7 @@ app.post("/balance", (req, res) => {
 app.post("/ipn", (req, res) => {
   console.log("ipn-responses");
   console.log(req.body);
-  const hmac = crypto.createHmac("sha512", "7bu5VBtCxirdmTD98l4Sm2nfn6t4b8KS");
+  const hmac = crypto.createHmac("sha512", "5hOWEbra7oU79ejwSpcLcEvq5cYHIC7E");
   hmac.update(JSON.stringify(req.body, Object.keys(req.body).sort()));
   const signature = hmac.digest("hex");
   if (
