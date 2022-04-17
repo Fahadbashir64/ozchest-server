@@ -299,8 +299,10 @@ app.post("/balance", (req, res) => {
     }
   });
 });
-app.get("/ipn", (req, res) => {
-  res.send(req.body);
+app.post("/ipn", (req, res) => {
+  console.log("ipn-responses");
+  console.log(req.body);
+  res.json({ status: ok });
 });
 
 /*app.get("/", (req, res) => {
