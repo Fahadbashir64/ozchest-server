@@ -376,7 +376,7 @@ function groupBy(key, array) {
   return result;
 }
 
-app.get("/", (req, res) => {
+app.get("/signin", (req, res) => {
   console.log(token);
   /*Product.findOne({
     brand: "Neosurf",
