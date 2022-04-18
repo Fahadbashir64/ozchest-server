@@ -80,7 +80,6 @@ app.post("/", (req, res) => {
         const token = jwt.sign({ userId: BuyerExist._id }, "talhakhan", {
           expiresIn: "1h",
         });
-        sessionStorage.setItem("user", req.body.buyer.key);
         res.status(200).send({ BuyerExist, token });
       } else {
         console.log("buyer not exist");
