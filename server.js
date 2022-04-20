@@ -71,7 +71,6 @@ app.post("/", (req, res) => {
       buyer
         .save()
         .then((result) => {
-          console.log(result);
           res.status(200).json({ msg: "successfully submitted" });
         })
         .catch((err) => {
@@ -89,7 +88,7 @@ app.post("/", (req, res) => {
         });
         res.status(200).send({ BuyerExist, token });
       } else {
-        console.log("buyer not exist");
+        res.status(400).send("User does not exist");
       }
     });
   } else if (req.body.value === 3) {
