@@ -55,23 +55,30 @@ app.use(
 
 app.post("/", (req, res) => {
   if (req.body.value === 1) {
-    console.log("buyer data = ", req.body.buyer);
-    const buyer = new Buyer({
-      _id: new mongoose.Types.ObjectId(),
-      key: req.body.buyer.key,
-      balance: 0,
-    });
-    console.log(buyer.key);
-    buyer
-      .save()
-      .then((result) => {
-        console.log(result);
-        res.status(200).json({ msg: "successfully submitted" });
-      })
-      .catch((err) => {
-        console.log(err);
-        res.status(500).json({ msg: "error occured" });
+    Buyer.findOne({
+      email: req.body.email,
+    }).then((user) => {
+      if (user) {
+        return res.status(400).send("User already exists");
+      }
+      const buyer = new Buyer({
+        _id: new mongoose.Types.ObjectId(),
+        key: req.body.buyer.key,
+        email: req.body.email,
+        balance: 0,
       });
+      console.log(buyer.key);
+      buyer
+        .save()
+        .then((result) => {
+          console.log(result);
+          res.status(200).json({ msg: "successfully submitted" });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(500).json({ msg: "error occured" });
+        });
+    });
   } else if (req.body.value === 2) {
     Buyer.findOne({
       key: req.body.buyer.key,
@@ -300,6 +307,7 @@ app.post("/balance", (req, res) => {
     }
   });
 });
+
 app.post("/ipn", (req, res) => {
   console.log("ipn-responses");
   console.log(req.body);

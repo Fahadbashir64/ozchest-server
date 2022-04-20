@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const BuyerSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   key: { type: String, require: true },
+  email: { type: String, require: true },
   balance: { type: Number },
 });
 
