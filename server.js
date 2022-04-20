@@ -81,6 +81,7 @@ app.post("/", (req, res) => {
   } else if (req.body.value === 2) {
     Buyer.findOne({
       key: req.body.buyer.key,
+      email: req.body.email,
     }).then((BuyerExist) => {
       if (BuyerExist) {
         const token = jwt.sign({ userId: BuyerExist._id }, "talhakhan", {
