@@ -65,6 +65,7 @@ app.post("/", (req, res) => {
         _id: new mongoose.Types.ObjectId(),
         key: req.body.buyer.key,
         email: req.body.email,
+        name: req.body.name,
         balance: 0,
       });
       console.log(buyer.key);
@@ -255,41 +256,44 @@ app.post("/", (req, res) => {
     }).then((data1) => {
       if (data1) {
         console.log("eee");
-        Buyer.findOneAndUpdate(
-          { key: req.body.user },
-          { balance: req.body.balance - req.body.total }
-        ).then((result) => {
-          if (result) {
-            const frommail = "ozchest1@gmail.com";
-            const password = "ozchest@123";
-            const tomail = req.body.email;
-            var transporter = nodemailer.createTransport({
-              service: "gmail",
+        Buyer.findOne({ key: req.body.user }).then((result2) => {
+          Buyer.findOneAndUpdate(
+            { key: req.body.user },
+            { balance: result2.balance - req.body.total }
+          ).then((result) => {
+            if (result) {
+              const frommail = "ozchest1@gmail.com";
+              const password = "ozchest@123";
+              const tomail = req.body.email;
+              var transporter = nodemailer.createTransport({
+                service: "gmail",
 
-              auth: {
-                user: frommail,
-                pass: password,
-              },
-            });
-            var link;
-            if (req.body.type === "TEXT") link = data1.code;
-            else if (req.body.type === "SCAN") link = data1.image.downloadLink;
-            var mailOptions = {
-              from: frommail,
-              to: tomail,
-              subject: "Gift Card From Ozchest",
-              text: `${req.body.product}  Link: ${link}`,
-            };
-            console.log(mailOptions.text);
-            transporter.sendMail(mailOptions, function (error, info) {
-              if (error) {
-                console.log("mail failed");
-              } else {
-                console.log("mail success");
-                res.send(data1);
-              }
-            });
-          }
+                auth: {
+                  user: frommail,
+                  pass: password,
+                },
+              });
+              var link;
+              if (req.body.type === "TEXT") link = data1.code;
+              else if (req.body.type === "SCAN")
+                link = data1.image.downloadLink;
+              var mailOptions = {
+                from: frommail,
+                to: tomail,
+                subject: "Gift Card From Ozchest",
+                text: `${req.body.product}  Link: ${link}`,
+              };
+              console.log(mailOptions.text);
+              transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                  console.log("mail failed");
+                } else {
+                  console.log("mail success");
+                  res.send(data1);
+                }
+              });
+            }
+          });
         });
         //console.log(data1);
         //res.send(data1);
