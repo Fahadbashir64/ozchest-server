@@ -117,6 +117,17 @@ app.post("/pricelist", (req, res) => {
   );
 });
 
+app.post("/sku", (req, res) => {
+  Product.findOne({
+    brand: req.body.brand,
+    countries: req.body.country,
+    currencyCode: req.body.code,
+    "faceValue.amount": req.body.price,
+  }).then((res2) => {
+    res.send(res2);
+  });
+});
+
 app.post("/stocks", (req, res) => {
   Product.findOne({
     brand: req.body.brand,
