@@ -14,7 +14,6 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import jwt from "jsonwebtoken";
 // import { send } from "process";
-import { response } from "express";
 import nodemailer from "nodemailer";
 import crypto from "crypto";
 
@@ -51,61 +50,244 @@ app.use(
     },
   })
 );
+
 //routes
 
-app.post("/", (req, res) => {
-  if (req.body.value === 1) {
-    Buyer.findOne({
-      email: req.body.email,
-    }).then((user) => {
-      if (user) {
-        return res.status(400).send("User already exists");
-      }
-      const buyer = new Buyer({
-        _id: new mongoose.Types.ObjectId(),
-        key: req.body.buyer.key,
-        email: req.body.email,
-        name: req.body.name,
-        balance: 0,
-      });
-      console.log(buyer.key);
-      buyer
-        .save()
-        .then((result) => {
-          res.status(200).json({ msg: "successfully submitted" });
-        })
-        .catch((err) => {
-          console.log(err);
-          res.status(500).json({ msg: "error occured" });
-        });
-    });
-  } else if (req.body.value === 2) {
-    Buyer.findOne({
+app.post("/generate", (req, res) => {
+  Buyer.findOne({
+    email: req.body.email,
+  }).then((user) => {
+    if (user) {
+      return res.status(400).send("User already exists");
+    }
+    const buyer = new Buyer({
+      _id: new mongoose.Types.ObjectId(),
       key: req.body.buyer.key,
       email: req.body.email,
-    }).then((BuyerExist) => {
-      if (BuyerExist) {
-        const token = jwt.sign({ userId: BuyerExist._id }, "talhakhan", {
-          expiresIn: "1h",
-        });
-        res.status(200).send({ BuyerExist, token });
-      } else {
-        res.status(400).send("User does not exist");
+      name: req.body.name,
+      balance: 0,
+    });
+    buyer
+      .save()
+      .then((result) => {
+        res.status(200).json({ msg: "successfully submitted" });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json({ msg: "error occured" });
+      });
+  });
+});
+
+app.post("/connect", (req, res) => {
+  Buyer.findOne({
+    key: req.body.buyer.key,
+    email: req.body.email,
+  }).then((BuyerExist) => {
+    if (BuyerExist) {
+      const token = jwt.sign({ userId: BuyerExist._id }, "talhakhan", {
+        expiresIn: "1h",
+      });
+      res.status(200).send({ BuyerExist, token });
+    } else {
+      res.status(400).send("User does not exist");
+    }
+  });
+});
+
+app.post("/getcurrencies", (req, res) => {
+  Country.findOne({ brand: req.body.brand }).then((res1) => {
+    Currency.findOne({ brand: req.body.brand, country: res1.names[0] }).then(
+      (res2) => {
+        const data = {
+          countries: res1.names,
+          curr: res2,
+        };
+        res.status(200).send(data);
       }
+    );
+  });
+});
+
+app.post("/pricelist", (req, res) => {
+  Currency.findOne({ brand: req.body.brand, country: req.body.country }).then(
+    (res2) => {
+      res.status(200).send(res2);
+    }
+  );
+});
+
+app.post("/stocks", (req, res) => {
+  Product.findOne({
+    brand: req.body.brand,
+    countries: req.body.country,
+    currencyCode: req.body.code,
+    "faceValue.amount": req.body.price,
+  }).then((res2) => {
+    fetch("https://api.prepaidforge.com/v1/1.0/findStocks", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-PrepaidForge-Api-Token": req.body.apitoken,
+      },
+
+      body: JSON.stringify({
+        types: ["TEXT", "SCAN"],
+        skus: [res2.sku],
+      }),
+    })
+      .then((response) => response.json())
+      .then((data1) => {
+        var temp = [];
+        data1.forEach((element) => {
+          if (element.quantity != 0) temp.push(element);
+        });
+        temp = temp.sort(function (a, b) {
+          return a.purchasePrice - b.purchasePrice;
+        });
+        res.send(temp[0]);
+      })
+      .catch((error) => {
+        console.log(error);
+        res.send(error);
+      });
+  });
+});
+
+app.post("/convert", (req, res) => {
+  let currencyConverter = new CC({
+    from: req.body.from,
+    to: req.body.to,
+    amount: req.body.amount,
+  });
+  currencyConverter.convert().then((response) => {
+    res.send({ cur: response });
+  });
+});
+
+app.post("/order", (req, res) => {
+  fetch("https://api.prepaidforge.com/v1/1.0/createApiOrder", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-PrepaidForge-Api-Token": req.body.apitoken,
+    },
+
+    body: JSON.stringify({
+      sku: req.body.product,
+      price: req.body.price,
+      codeType: req.body.type,
+    }),
+  }).then((data1) => {
+    if (data1) {
+      Buyer.findOne({ key: req.body.user }).then((result2) => {
+        Buyer.findOneAndUpdate(
+          { key: req.body.user },
+          { balance: result2.balance - req.body.total }
+        ).then((result) => {
+          if (result) {
+            const frommail = "ozchest1@gmail.com";
+            const password = "ozchest@123";
+            const tomail = req.body.email;
+            var transporter = nodemailer.createTransport({
+              service: "gmail",
+
+              auth: {
+                user: frommail,
+                pass: password,
+              },
+            });
+            var link;
+            if (req.body.type === "TEXT") link = data1.code;
+            else if (req.body.type === "SCAN") link = data1.image.downloadLink;
+            var mailOptions = {
+              from: frommail,
+              to: tomail,
+              subject: "Gift Card From Ozchest",
+              text: `${req.body.product}  Link: ${link}`,
+            };
+            console.log(mailOptions.text);
+            transporter.sendMail(mailOptions, function (error, info) {
+              if (error) {
+                console.log("mail failed");
+              } else {
+                console.log("mail success");
+                res.send(data1);
+              }
+            });
+          }
+        });
+      });
+    }
+  });
+});
+
+app.post("/balance", (req, res) => {
+  Buyer.findOne({
+    key: req.body.user,
+  }).then((res2) => {
+    if (res2) {
+      console.log(res2.balance);
+      res.send({ balance: res2.balance });
+    }
+  });
+});
+
+app.post("/ipn", (req, res) => {
+  const hmac = crypto.createHmac("sha512", "5hOWEbra7oU79ejwSpcLcEvq5cYHIC7E");
+  hmac.update(JSON.stringify(req.body, Object.keys(req.body).sort()));
+  const signature = hmac.digest("hex");
+  if (
+    req.body.payment_status === "finished" &&
+    signature === req.headers["x-nowpayments-sig"]
+  ) {
+    let currencyConverter = new CC({
+      from: req.body.price_currency,
+      to: "eur",
+      amount: req.body.price_amount,
     });
-  } else if (req.body.value === 3) {
-    Country.findOne({ brand: req.body.brand }).then((res1) => {
-      Currency.findOne({ brand: req.body.brand, country: res1.names[0] }).then(
-        (res2) => {
-          const data = {
-            countries: res1.names,
-            curr: res2,
-          };
-          res.status(200).send(data);
+    currencyConverter.convert().then((response) => {
+      console.log(response);
+      Buyer.findOne({
+        key: req.body.order_id,
+      }).then((res2) => {
+        if (res2) {
+          Buyer.findOneAndUpdate(
+            { key: req.body.order_id },
+            { balance: Number(response) + Number(res2.balance) }
+          ).then((result) => {
+            console.log("updated");
+          });
         }
-      );
+      });
     });
-    /* Country.findOne({ brand: req.body.brand }).then((res1) => {
+  }
+  res.json({ status: 200 });
+});
+
+app.get("/apitoken", (req, res) => {
+  fetch("https://api.prepaidforge.com/v1/1.0/signInWithApi", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: "Worldofprodiverse@gmail.com",
+      password: "Bravo1?@1",
+    }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data.apiToken);
+      res.send(data);
+    })
+    .catch((error) => {
+      res.send(error);
+    });
+});
+
+function populateDB() {
+  /* Country.findOne({ brand: req.body.brand }).then((res1) => {
       res1.names.forEach((element) => {
         var curr = [];
         Product.find({ brand: req.body.brand, countries: element }).then(
@@ -169,8 +351,7 @@ app.post("/", (req, res) => {
         });
       // res.status(200).send(country);
     });*/
-
-    /*console.log("found");
+  /*console.log("found");
     console.log(req.body);
     Product.findOne({
       brand: req.body.brand,
@@ -186,331 +367,7 @@ app.post("/", (req, res) => {
         console.log("buyer not exist");
       }
     });*/
-  } else if (req.body.value === 4) {
-    Currency.findOne({ brand: req.body.brand, country: req.body.country }).then(
-      (res2) => {
-        res.status(200).send(res2);
-      }
-    );
-  } else if (req.body.value === 5) {
-    Product.findOne({
-      brand: req.body.brand,
-      countries: req.body.country,
-      currencyCode: req.body.code,
-      "faceValue.amount": req.body.price,
-    }).then((res2) => {
-      fetch("https://api.prepaidforge.com/v1/1.0/findStocks", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-PrepaidForge-Api-Token": req.body.apitoken,
-        },
-
-        body: JSON.stringify({
-          types: ["TEXT", "SCAN"],
-          skus: [res2.sku],
-        }),
-      })
-        .then((response) => response.json())
-        .then((data1) => {
-          // enter you logic when the fetch is successful
-          // var stocks = groupBy("skus", data);
-          var temp = [];
-          data1.forEach((element) => {
-            if (element.quantity != 0) temp.push(element);
-          });
-          temp = temp.sort(function (a, b) {
-            return a.purchasePrice - b.purchasePrice;
-          });
-          res.send(temp[0]);
-        })
-        .catch((error) => {
-          // enter your logic for when there is an error (ex. error toast)
-          console.log(error);
-          res.send(error);
-        });
-      //res.status(200).send(res2);
-    });
-  } else if (req.body.value === 6) {
-    let currencyConverter = new CC({
-      from: req.body.from,
-      to: req.body.to,
-      amount: req.body.amount,
-    });
-    currencyConverter.convert().then((response) => {
-      res.send({ cur: response });
-    });
-  } else if (req.body.value === 7) {
-    fetch("https://api.prepaidforge.com/v1/1.0/createApiOrder", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-PrepaidForge-Api-Token": req.body.apitoken,
-      },
-
-      body: JSON.stringify({
-        sku: req.body.product,
-        price: req.body.price,
-        codeType: req.body.type,
-      }),
-    }).then((data1) => {
-      if (data1) {
-        console.log("eee");
-        Buyer.findOne({ key: req.body.user }).then((result2) => {
-          Buyer.findOneAndUpdate(
-            { key: req.body.user },
-            { balance: result2.balance - req.body.total }
-          ).then((result) => {
-            if (result) {
-              const frommail = "ozchest1@gmail.com";
-              const password = "ozchest@123";
-              const tomail = req.body.email;
-              var transporter = nodemailer.createTransport({
-                service: "gmail",
-
-                auth: {
-                  user: frommail,
-                  pass: password,
-                },
-              });
-              var link;
-              if (req.body.type === "TEXT") link = data1.code;
-              else if (req.body.type === "SCAN")
-                link = data1.image.downloadLink;
-              var mailOptions = {
-                from: frommail,
-                to: tomail,
-                subject: "Gift Card From Ozchest",
-                text: `${req.body.product}  Link: ${link}`,
-              };
-              console.log(mailOptions.text);
-              transporter.sendMail(mailOptions, function (error, info) {
-                if (error) {
-                  console.log("mail failed");
-                } else {
-                  console.log("mail success");
-                  res.send(data1);
-                }
-              });
-            }
-          });
-        });
-        //console.log(data1);
-        //res.send(data1);
-      }
-    });
-  }
-});
-app.post("/balance", (req, res) => {
-  Buyer.findOne({
-    key: req.body.user,
-  }).then((res2) => {
-    if (res2) {
-      console.log(res2.balance);
-      res.send({ balance: res2.balance });
-    }
-  });
-});
-
-app.post("/ipn", (req, res) => {
-  console.log("ipn-responses");
-  console.log(req.body);
-  const hmac = crypto.createHmac("sha512", "5hOWEbra7oU79ejwSpcLcEvq5cYHIC7E");
-  hmac.update(JSON.stringify(req.body, Object.keys(req.body).sort()));
-  const signature = hmac.digest("hex");
-  if (
-    req.body.payment_status === "finished" &&
-    signature === req.headers["x-nowpayments-sig"]
-  ) {
-    console.log("valid");
-    let currencyConverter = new CC({
-      from: req.body.price_currency,
-      to: "eur",
-      amount: req.body.price_amount,
-    });
-    currencyConverter.convert().then((response) => {
-      console.log(response);
-      Buyer.findOne({
-        key: req.body.order_id,
-      }).then((res2) => {
-        if (res2) {
-          Buyer.findOneAndUpdate(
-            { key: req.body.order_id },
-            { balance: Number(response) + Number(res2.balance) }
-          ).then((result) => {
-            console.log("updated");
-          });
-        }
-      });
-    });
-
-    //res.send({ status: "finished" });
-  }
-  res.json({ status: 200 });
-});
-/*app.get("/", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  fetch("https://api.prepaidforge.com/v1/1.0/findProductPage", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      // your expected POST request payload goes here
-      page: 101,
-      pageSize: 10,
-    }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      // Do some stuff ...
-      console.log("dell");
-      console.log(data);
-      res.send(data);
-    })
-    .catch((err) => console.log(err));
-});*/
-
-/*app.get("/", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  fetch("https://api.prepaidforge.com/v1/1.0/findAllProducts", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      // Do some stuff ...
-      console.log("dell");
-      console.log(data);
-      // res.send(data.slice(1000, 1040));
-      res.send(data);
-      Product.insertMany(data)
-        .then((docs) => {})
-        .catch((err) => {});
-    })
-    .catch((err) => console.log(err));
-});*/
-
-var token;
-
-/*app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname + "/public/build/index.html"));
-});
-app.use(express.static(path.join(__dirname, "/public/build")));*/
-
-function groupBy(key, array) {
-  var result = [];
-  for (var i = 0; i < array.length; i++) {
-    var added = false;
-    for (var j = 0; j < result.length; j++) {
-      if (result[j][key] == array[i][key]) {
-        result[j].items.push(array[i]);
-        added = true;
-        break;
-      }
-    }
-    if (!added) {
-      var entry = { items: [] };
-      entry[key] = array[i][key];
-      entry.items.push(array[i]);
-      result.push(entry);
-    }
-  }
-  return result;
 }
 
-app.get("/signin", (req, res) => {
-  console.log(token);
-  /*Product.findOne({
-    brand: "Neosurf",
-    countries: "uk",
-    currencyCode: "GBP",
-    "faceValue.amount": 20,
-  }).then((res2) => {
-    if (res2) {
-      fetch("https://api.prepaidforge.com/v1/1.0/signInWithApi", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          // your expected POST request payload goes here
-          email: "Worldofprodiverse@gmail.com",
-          password: "Bravo1?@1",
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          fetch("https://api.prepaidforge.com/v1/1.0/findStocks", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-PrepaidForge-Api-Token": data.apiToken,
-            },
-
-            body: JSON.stringify({
-              types: ["TEXT", "SCAN"],
-              skus: [res2.sku],
-            }),
-          })
-            .then((response) => response.json())
-            .then((data1) => {
-              //res.send(data1);
-              // enter you logic when the fetch is successful
-              // var stocks = groupBy("skus", data);
-              var temp = [];
-              data1.forEach((element) => {
-                if (element.quantity != 0) temp.push(element);
-              });
-              temp = temp.sort(function (a, b) {
-                return a.purchasePrice - b.purchasePrice;
-              });
-              res.send(temp[0]);
-            })
-            .catch((error) => {
-              // enter your logic for when there is an error (ex. error toast)
-              console.log(error);
-              res.send(error);
-            });
-          // enter you logic when the fetch is successful
-          // var stocks = groupBy("skus", data);
-          console.log("hello");
-          console.log(data.apiToken);
-          //res.send(data);
-        })
-        .catch((error) => {
-          // enter your logic for when there is an error (ex. error toast)
-          res.send(error);
-        });
-    }
-  });*/
-  fetch("https://api.prepaidforge.com/v1/1.0/signInWithApi", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      // your expected POST request payload goes here
-      email: "Worldofprodiverse@gmail.com",
-      password: "Bravo1?@1",
-    }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      // enter you logic when the fetch is successful
-      // var stocks = groupBy("skus", data);
-      console.log("hello");
-      console.log(data.apiToken);
-      res.send(data);
-    })
-    .catch((error) => {
-      // enter your logic for when there is an error (ex. error toast)
-      res.send(error);
-    });
-});
 const PORT = 8000;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
-
-//app.listen(5000, () => console.log("Listening on port 5000"));
