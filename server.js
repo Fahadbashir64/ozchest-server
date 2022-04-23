@@ -177,60 +177,116 @@ app.post("/convert", (req, res) => {
 });
 
 app.post("/order", (req, res) => {
-  fetch("https://api.prepaidforge.com/v1/1.0/createApiOrder", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-PrepaidForge-Api-Token": req.body.apitoken,
-    },
+  if (req.body.brand === "Crypto Voucher") {
+    fetch("https://dev-api.cryptovoucher.io/merchant/voucher/partner", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
 
-    body: JSON.stringify({
-      sku: req.body.product,
-      price: req.body.price,
-      codeType: req.body.type,
-    }),
-  }).then((data1) => {
-    if (data1) {
-      Buyer.findOne({ key: req.body.user }).then((result2) => {
-        Buyer.findOneAndUpdate(
-          { key: req.body.user },
-          { balance: result2.balance - req.body.total }
-        ).then((result) => {
-          if (result) {
-            const frommail = "ozchest1@gmail.com";
-            const password = "ozchest@123";
-            const tomail = req.body.email;
-            var transporter = nodemailer.createTransport({
-              service: "gmail",
+      body: JSON.stringify({
+        login: "echiefsofficial",
+        password: "smotherunsteadydisruptunbittenstrickencurvyhazilydebug",
+        amount: req.body.price,
+        currency: "EUR",
+        orderId: "3714cc3a-c25f-47e6-83fc-2da76fe27f340",
+      }),
+    }).then((data1) => {
+      if (data1) {
+        Buyer.findOne({ key: req.body.user }).then((result2) => {
+          Buyer.findOneAndUpdate(
+            { key: req.body.user },
+            { balance: result2.balance - req.body.total }
+          ).then((result) => {
+            if (result) {
+              const frommail = "ozchest1@gmail.com";
+              const password = "ozchest@123";
+              const tomail = req.body.email;
+              var transporter = nodemailer.createTransport({
+                service: "gmail",
 
-              auth: {
-                user: frommail,
-                pass: password,
-              },
-            });
-            var link;
-            if (req.body.type === "TEXT") link = data1.code;
-            else if (req.body.type === "SCAN") link = data1.image.downloadLink;
-            var mailOptions = {
-              from: frommail,
-              to: tomail,
-              subject: "Gift Card From Ozchest",
-              text: `${req.body.product}  Link: ${link}`,
-            };
-            console.log(mailOptions.text);
-            transporter.sendMail(mailOptions, function (error, info) {
-              if (error) {
-                console.log("mail failed");
-              } else {
-                console.log("mail success");
-                res.send(data1);
-              }
-            });
-          }
+                auth: {
+                  user: frommail,
+                  pass: password,
+                },
+              });
+              var mailOptions = {
+                from: frommail,
+                to: tomail,
+                subject: "Gift Card From Ozchest",
+                text: `${req.body.product}  Link: ${data1.code}`,
+              };
+              console.log(mailOptions.text);
+              transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                  console.log("mail failed");
+                } else {
+                  console.log("mail success");
+                  res.send(data1);
+                }
+              });
+            }
+          });
         });
-      });
-    }
-  });
+      }
+    });
+  } else {
+    fetch("https://api.prepaidforge.com/v1/1.0/createApiOrder", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-PrepaidForge-Api-Token": req.body.apitoken,
+      },
+
+      body: JSON.stringify({
+        sku: req.body.product,
+        price: req.body.price,
+        codeType: req.body.type,
+      }),
+    }).then((data1) => {
+      if (data1) {
+        Buyer.findOne({ key: req.body.user }).then((result2) => {
+          Buyer.findOneAndUpdate(
+            { key: req.body.user },
+            { balance: result2.balance - req.body.total }
+          ).then((result) => {
+            if (result) {
+              const frommail = "ozchest1@gmail.com";
+              const password = "ozchest@123";
+              const tomail = req.body.email;
+              var transporter = nodemailer.createTransport({
+                service: "gmail",
+
+                auth: {
+                  user: frommail,
+                  pass: password,
+                },
+              });
+              var link;
+              if (req.body.type === "TEXT") link = data1.code;
+              else if (req.body.type === "SCAN")
+                link = data1.image.downloadLink;
+              var mailOptions = {
+                from: frommail,
+                to: tomail,
+                subject: "Gift Card From Ozchest",
+                text: `${req.body.product}  Link: ${link}`,
+              };
+              console.log(mailOptions.text);
+              transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                  console.log("mail failed");
+                } else {
+                  console.log("mail success");
+                  res.send(data1);
+                }
+              });
+            }
+          });
+        });
+      }
+    });
+  }
 });
 
 app.post("/balance", (req, res) => {
